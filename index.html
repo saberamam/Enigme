@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadeau mystère 🎁</title>
+  <title>Enigme mystère ❓</title>
   <style>
     body {
       font-family: "Poppins", sans-serif;
@@ -15,34 +15,40 @@
       justify-content: center;
     }
 
-    h1 {
-      font-size: 1.8rem;
+    h1, #finalText {
+      font-size: 1.5rem;
       margin-bottom: 20px;
       color: #333;
       text-align: center;
     }
 
-    .gift {
+    .gift, #monkey, #finalPhoto {
       width: 180px;
-      transition: transform 0.4s ease;
+      transition: transform 0.4s ease, opacity 0.8s ease;
+      cursor: pointer;
     }
 
     .gift:hover {
       transform: scale(1.05);
     }
 
-    input {
+    .input-container {
       margin-top: 20px;
+      display: flex;
+      gap: 5px;
+    }
+
+    input {
+      width: 40px;
       padding: 10px;
-      font-size: 1rem;
+      font-size: 1.2rem;
       border-radius: 8px;
       border: 1px solid #ccc;
       text-align: center;
-      width: 120px;
     }
 
     button {
-      margin-top: 10px;
+      margin-top: 15px;
       padding: 10px 20px;
       background-color: #f76c6c;
       color: white;
@@ -87,19 +93,53 @@
       to { transform: scale(1); opacity: 1; }
     }
 
-    #monkey {
+    #monkey, #finalPhoto, #finalText {
       display: none;
-      width: 180px;
+    }
+
+    /* animation fade-in pour la photo finale */
+    .fade-in {
+      opacity: 0;
+      animation: fadeInPhoto 1s forwards;
+    }
+
+    @keyframes fadeInPhoto {
+      to { opacity: 1; }
+    }
+
+    #finalPhoto {
+      width: 400px; /* plus gros */
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
   </style>
 </head>
 <body>
-  <h1>Entre le code secret pour ouvrir ton cadeau 🎁</h1>
-  <img id="gift" class="gift" src="https://cdn-icons-png.flaticon.com/128/1139/1139982.png" alt="Cadeau">
-  <img id="monkey" src="https://cdn-icons-png.flaticon.com/512/7890/7890168.png" alt="Singe">
+  <h1 id="riddle">
+    ENIGME <br><br>
+    Il est offert et inévitable pourtant,<br>
+    On l’enveloppe parfois sans le saisir toutefois,<br>
+    Il passe de temps en temps et on en savoure l'instant.<br><br>
+    Qui est-il ? 
+  </h1>
 
-  <input type="text" id="code" placeholder="Tape le code">
-  <button onclick="checkCode()">Valider</button>
+  <img id="gift" class="gift" src="sablierwebp.webp" alt="Sablier">
+  <img id="monkey" src="cadeau.gif" alt="Singe">
+
+  <div id="finalText">Nous sommes heureux de vous annoncer que la famille s'aggrandit</div>
+  <img id="finalPhoto" src="photo.jpg" alt="Photo surprise" class="fade-in">
+
+  <div class="input-container" id="inputContainer">
+    <input type="text" maxlength="1" id="letter0">
+    <input type="text" maxlength="1" id="letter1">
+    <input type="text" maxlength="1" id="letter2">
+    <input type="text" maxlength="1" id="letter3">
+    <input type="text" maxlength="1" id="letter4">
+    <input type="text" maxlength="1" id="letter5">
+    <input type="text" maxlength="1" id="letter6">
+  </div>
+  <button onclick="checkAnswer()">Valider</button>
 
   <div id="popup" class="popup">
     <div class="popup-content">
@@ -109,24 +149,51 @@
   </div>
 
   <script>
-    function checkCode() {
-      const code = document.getElementById("code").value.trim();
+    const finalText = document.getElementById("finalText");
+    const finalPhoto = document.getElementById("finalPhoto");
+
+    function checkAnswer() {
+      const letters = [];
+      for (let i = 0; i < 7; i++) {
+        letters.push(document.getElementById(`letter${i}`).value.trim().toUpperCase());
+      }
+
+      const answer = letters.join('');
       const popup = document.getElementById("popup");
       const gift = document.getElementById("gift");
       const monkey = document.getElementById("monkey");
+      const riddle = document.getElementById("riddle");
+      const inputContainer = document.getElementById("inputContainer");
 
-      if (code === "2311") {
+      if (answer === "PRESENT") {
         gift.style.display = "none";
         monkey.style.display = "block";
+        riddle.innerHTML = "Bravo ! La bonne réponse était le présent ! Clique à présent sur le cadeau pour découvrir ce que nous réserve le futur !";
+        inputContainer.style.display = "none";
+
+        // rendre le singe cliquable
+        monkey.addEventListener("click", showFinalPhoto);
       } else {
         popup.classList.add("active");
       }
     }
 
+    function showFinalPhoto() {
+      const monkey = document.getElementById("monkey");
+      monkey.style.display = "none";
+        // On enlève le texte de l'énigme s'il est encore présent
+      const riddle = document.getElementById("riddle");
+      riddle.innerHTML = "";
+      finalText.style.display = "block";
+      finalPhoto.style.display = "block";
+    }
+
     function closePopup() {
       document.getElementById("popup").classList.remove("active");
-      document.getElementById("code").value = "";
-      document.getElementById("code").focus();
+      for (let i = 0; i < 7; i++) {
+        document.getElementById(`letter${i}`).value = "";
+      }
+      document.getElementById("letter0").focus();
     }
   </script>
 </body>
