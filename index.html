@@ -3,70 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:title" content="Enigme mystère">
-  <meta property="og:description" content="par Sabéra et Moustansir !">
-  <meta property="og:type" content="website">
   <title>❓ Enigme mystère ❓</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
     body {
       font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #fbe5e5, #ffe9c9);
-      height: 100vh;
+      background: linear-gradient(135deg, #ffe0e9, #fff5d7, #e1f7e7);
+      min-height: 100vh;
+      margin: 0;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 10px;
+      padding: 20px;
     }
 
-    h1, #finalText {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-      color: #333;
+    .container {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      padding: 40px 30px;
+      max-width: 500px;
       text-align: center;
+      transition: transform 0.4s ease;
     }
 
-    .gift, #monkey, #finalPhoto {
-      width: 180px;
-      transition: transform 0.4s ease, opacity 0.8s ease;
+    .container:hover {
+      transform: translateY(-3px);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      color: #333;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .gift, #monkey {
+      width: 150px;
+      margin-top: 20px;
       cursor: pointer;
+      border-radius: 50%;
+      object-fit: cover;
+      background-color: rgba(255,255,255,0.4);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: all 0.4s ease;
+      clip-path: circle(50% at center);
     }
 
-    .gift:hover {
-      transform: scale(1.05);
+    .gift:hover, #monkey:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 20px rgba(255, 182, 193, 0.7);
+    }
+
+    #finalText {
+      display: none;
+      font-size: 1.2rem;
+      color: #444;
+      margin-top: 20px;
+      animation: fadeIn 1s ease forwards;
     }
 
     .input-container {
-      margin-top: 20px;
+      margin-top: 25px;
       display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
+      gap: 8px;
       justify-content: center;
+      flex-wrap: wrap;
     }
 
     input {
-      width: 40px;
-      padding: 10px;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      width: 45px;
+      height: 45px;
+      font-size: 1.3rem;
+      border: 2px solid #f8b4b4;
+      border-radius: 10px;
       text-align: center;
+      background: white;
+      color: #333;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #f76c6c;
+      box-shadow: 0 0 10px rgba(247,108,108,0.3);
     }
 
     button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #f76c6c;
+      margin-top: 20px;
+      padding: 12px 25px;
+      background: linear-gradient(135deg, #ff8fa3, #f76c6c);
       color: white;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      border-radius: 10px;
       font-weight: bold;
-      transition: background-color 0.3s ease;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
     button:hover {
-      background-color: #e85a5a;
+      background: linear-gradient(135deg, #f76c6c, #e85a5a);
+      transform: scale(1.05);
     }
 
     .popup {
@@ -74,103 +115,90 @@
       top: 0; left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.5);
       display: flex;
       align-items: center;
       justify-content: center;
       visibility: hidden;
+      opacity: 0;
+      transition: all 0.3s ease;
     }
 
     .popup.active {
       visibility: visible;
+      opacity: 1;
     }
 
     .popup-content {
       background: white;
-      padding: 20px 30px;
-      border-radius: 10px;
+      border-radius: 15px;
+      padding: 25px 35px;
       text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       animation: fadeIn 0.3s ease;
     }
 
-    @keyframes fadeIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    #monkey, #finalPhoto, #finalText {
-      display: none;
-    }
-
-    .fade-in {
-      opacity: 0;
-      animation: fadeInPhoto 1s forwards;
-    }
-
-    @keyframes fadeInPhoto {
-      to { opacity: 1; }
-    }
-
     #finalPhoto {
-      width: 400px;
+      display: none;
+      width: 100%;
+      max-width: 400px;
       margin-top: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     @media (max-width: 480px) {
-      .input-container {
-        gap: 3px;
+      .container {
+        padding: 25px 15px;
       }
-
-      .input-container input {
-        width: 35px;
-        padding: 8px;
-        font-size: 1rem;
+      input {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
       }
-
       button {
-        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+      #finalText {
         font-size: 1rem;
-      }
-
-      #finalPhoto {
-        width: 90%;
-      }
-
-      h1, #finalText {
-        font-size: 1.2rem;
       }
     }
   </style>
 </head>
 <body>
-  <h1 id="riddle">
-    ENIGME <br><br>
-    Il est offert et inévitable pourtant,<br>
-    On l’enveloppe parfois sans le saisir toutefois,<br>
-    Il passe de temps en temps et on en savoure l'instant.<br><br>
-    Qui est-il ? 
-  </h1>
+  <div class="container">
+    <h1 id="riddle">
+      ENIGME <br><br>
+      Il est offert et inévitable pourtant,<br>
+      On l’enveloppe parfois sans le saisir toutefois,<br>
+      Il passe de temps en temps et on en savoure l'instant.<br><br>
+      Qui est-il ? 
+    </h1>
 
-  <img id="gift" class="gift" src="sablierwebp.webp" alt="Sablier">
-  <img id="monkey" src="cadeau.gif" alt="Singe">
+    <img id="gift" class="gift" src="sablierwebp.webp" alt="Sablier">
+    <img id="monkey" src="cadeau.gif" alt="Cadeau" style="display:none;">
 
-  <div id="finalText">Nous sommes heureux de vous annoncer que la famille va s'aggrandir bientôt avec le plus beau des cadeaux ! </div>
-  <img id="finalPhoto" src="photo.jpg" alt="Photo surprise" class="fade-in">
+    <div id="finalText">Nous sommes heureux de vous annoncer que la famille va s'agrandir bientôt avec le plus beau des cadeaux 💝 !</div>
+    <img id="finalPhoto" src="photo.jpg" alt="Photo surprise">
 
-  <div class="input-container" id="inputContainer">
-    <input type="text" maxlength="1" id="letter0">
-    <input type="text" maxlength="1" id="letter1">
-    <input type="text" maxlength="1" id="letter2">
-    <input type="text" maxlength="1" id="letter3">
-    <input type="text" maxlength="1" id="letter4">
-    <input type="text" maxlength="1" id="letter5">
-    <input type="text" maxlength="1" id="letter6">
+    <div class="input-container" id="inputContainer">
+      <input type="text" maxlength="1" id="letter0">
+      <input type="text" maxlength="1" id="letter1">
+      <input type="text" maxlength="1" id="letter2">
+      <input type="text" maxlength="1" id="letter3">
+      <input type="text" maxlength="1" id="letter4">
+      <input type="text" maxlength="1" id="letter5">
+      <input type="text" maxlength="1" id="letter6">
+    </div>
+
+    <button id="validateBtn" onclick="checkAnswer()">Valider</button>
   </div>
-
-  <button id="validateBtn" onclick="checkAnswer()">Valider</button>
 
   <div id="popup" class="popup">
     <div class="popup-content">
@@ -200,9 +228,9 @@
       if (answer === "PRESENT") {
         gift.style.display = "none";
         monkey.style.display = "block";
-        riddle.innerHTML = "Bravo ! La bonne réponse était le présent ! On offre des présents bien enveloppés de papier cadeau 🎁. <br> Le présent est pour autant inévitable, insaississable et on le savoure à chaque instant 😄. <br><br> Clique à présent sur le cadeau pour découvrir ce que nous réserve le futur !";
+        riddle.innerHTML = "Bravo 🎉 ! La bonne réponse était <strong>le présent</strong> !<br><br>On offre des présents bien enveloppés de papier cadeau 🎁. Le présent est pour autant inévitable, insaisissable et on le savoure à chaque instant 😄.<br><br><em>Clique sur le cadeau pour découvrir ce que nous réserve le futur…</em>";
         inputContainer.style.display = "none";
-        validateBtn.style.display = "none"; // 🔥 cacher le bouton "Valider"
+        validateBtn.style.display = "none";
         monkey.addEventListener("click", showFinalPhoto);
       } else {
         popup.classList.add("active");
@@ -215,11 +243,8 @@
 
       monkey.style.display = "none";
       riddle.innerHTML = "";
-
       finalText.style.display = "block";
       finalPhoto.style.display = "block";
-
-      // 🔥 On s'assure que le bouton reste caché même ici
       validateBtn.style.display = "none";
     }
 
@@ -230,6 +255,23 @@
       }
       document.getElementById("letter0").focus();
     }
+
+    /* 🧠 Auto-navigation entre les champs */
+    const inputs = document.querySelectorAll('.input-container input');
+    inputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        e.target.value = e.target.value.toUpperCase();
+        if (e.target.value && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
   </script>
 </body>
 </html>
