@@ -33,11 +33,22 @@
       transform: translateY(-3px);
     }
 
-    h1 {
-      font-size: 1.5rem;
+    .title-main {
+      display: block;
+      font-size: 2.4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #f76c6c, #ffb347);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 8px rgba(247,108,108,0.3);
+      margin-bottom: 15px;
+    }
+
+    .riddle-text {
+      font-size: 1.1rem;
       color: #333;
-      margin-bottom: 20px;
-      font-weight: 600;
+      line-height: 1.6;
+      margin-bottom: 15px;
     }
 
     .gift, #monkey {
@@ -68,15 +79,17 @@
     .input-container {
       margin-top: 25px;
       display: flex;
-      gap: 8px;
       justify-content: center;
-      flex-wrap: wrap;
+      gap: 8px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 10px;
     }
 
     input {
-      width: 45px;
-      height: 45px;
-      font-size: 1.3rem;
+      width: 42px;
+      height: 42px;
+      font-size: 1.2rem;
       border: 2px solid #f8b4b4;
       border-radius: 10px;
       text-align: center;
@@ -84,6 +97,7 @@
       color: #333;
       font-weight: 600;
       transition: 0.3s;
+      flex: 0 0 auto;
     }
 
     input:focus {
@@ -110,34 +124,6 @@
       transform: scale(1.05);
     }
 
-    .popup {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      visibility: hidden;
-      opacity: 0;
-      transition: all 0.3s ease;
-    }
-
-    .popup.active {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    .popup-content {
-      background: white;
-      border-radius: 15px;
-      padding: 25px 35px;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      animation: fadeIn 0.3s ease;
-    }
-
     #finalPhoto {
       display: none;
       width: 100%;
@@ -153,14 +139,54 @@
       to { opacity: 1; transform: scale(1); }
     }
 
+    /* 🌟 Popup */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: white;
+      color: #333;
+      padding: 25px 35px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      text-align: center;
+      z-index: 9999;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .popup.active {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    .popup button {
+      margin-top: 15px;
+      background: linear-gradient(135deg, #f76c6c, #ffb3b3);
+      border: none;
+      color: white;
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* 📱 Responsive */
     @media (max-width: 480px) {
-      .container {
-        padding: 25px 15px;
+      .title-main {
+        font-size: 2rem;
+      }
+      .riddle-text {
+        font-size: 1rem;
       }
       input {
-        width: 38px;
-        height: 38px;
-        font-size: 1.1rem;
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+      }
+      .input-container {
+        gap: 5px;
       }
       button {
         font-size: 0.9rem;
@@ -168,17 +194,34 @@
       #finalText {
         font-size: 1rem;
       }
+      .container p, .container em, .container strong {
+        font-size: 0.9rem !important;
+        line-height: 1.4;
+      }
+    }
+
+    @media (max-width: 360px) {
+      input {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+      }
+      .input-container {
+        gap: 4px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1 id="riddle">
-      ENIGME <br><br>
-      Il est offert et inévitable pourtant,<br>
-      On l’enveloppe parfois sans le saisir toutefois,<br>
-      Il passe de temps en temps et on en savoure l'instant.<br><br>
-      Qui est-il ? 
+      <span class="title-main">ENIGME</span>
+      <div class="riddle-text">
+        Il est offert et inévitable pourtant,<br>
+        On l’enveloppe parfois sans le saisir toutefois,<br>
+        Il passe de temps en temps et on en savoure l'instant.<br><br>
+        Qui est-il ?
+      </div>
     </h1>
 
     <img id="gift" class="gift" src="sablierwebp.webp" alt="Sablier">
@@ -200,26 +243,32 @@
     <button id="validateBtn" onclick="checkAnswer()">Valider</button>
   </div>
 
+  <!-- 🌸 Popup erreur -->
   <div id="popup" class="popup">
-    <div class="popup-content">
-      <p id="popupText">Essaye encore 😅</p>
-      <button onclick="closePopup()">OK</button>
-    </div>
+    <p>Essaye encore 😅</p>
+    <button onclick="closePopup()">OK</button>
   </div>
 
   <script>
     const finalText = document.getElementById("finalText");
     const finalPhoto = document.getElementById("finalPhoto");
     const validateBtn = document.getElementById("validateBtn");
+    const popup = document.getElementById("popup");
+
+    function normalizeAnswer(str) {
+      return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase();
+    }
 
     function checkAnswer() {
-      const letters = [];
+      let letters = [];
       for (let i = 0; i < 7; i++) {
-        letters.push(document.getElementById(`letter${i}`).value.trim().toUpperCase());
+        letters.push(document.getElementById(`letter${i}`).value.trim());
       }
 
-      const answer = letters.join('');
-      const popup = document.getElementById("popup");
+      const answer = normalizeAnswer(letters.join(''));
       const gift = document.getElementById("gift");
       const monkey = document.getElementById("monkey");
       const riddle = document.getElementById("riddle");
@@ -228,32 +277,37 @@
       if (answer === "PRESENT") {
         gift.style.display = "none";
         monkey.style.display = "block";
-        riddle.innerHTML = "Bravo 🎉 ! La bonne réponse était <strong>le présent</strong> !<br><br>On offre des présents bien enveloppés de papier cadeau 🎁. Le présent est pour autant inévitable, insaisissable et on le savoure à chaque instant 😄.<br><br><em>Clique sur le cadeau pour découvrir ce que nous réserve le futur…</em>";
+        riddle.innerHTML = `
+          <p style="font-size:1rem; line-height:1.6; color:#333;">
+            🎉 <strong>Bravo !</strong> La bonne réponse était <strong>le présent</strong> !<br><br>
+            On offre des présents bien enveloppés de papier cadeau 🎁.<br>
+            Le présent est pour autant inévitable, insaisissable et on le savoure à chaque instant 😄.<br><br>
+            <em>Clique sur le cadeau pour découvrir ce que nous réserve le futur…</em>
+          </p>`;
         inputContainer.style.display = "none";
         validateBtn.style.display = "none";
         monkey.addEventListener("click", showFinalPhoto);
       } else {
-        popup.classList.add("active");
+        showPopup();
       }
+    }
+
+    function showPopup() {
+      popup.classList.add("active");
+    }
+
+    function closePopup() {
+      popup.classList.remove("active");
     }
 
     function showFinalPhoto() {
       const monkey = document.getElementById("monkey");
       const riddle = document.getElementById("riddle");
-
       monkey.style.display = "none";
       riddle.innerHTML = "";
       finalText.style.display = "block";
       finalPhoto.style.display = "block";
       validateBtn.style.display = "none";
-    }
-
-    function closePopup() {
-      document.getElementById("popup").classList.remove("active");
-      for (let i = 0; i < 7; i++) {
-        document.getElementById(`letter${i}`).value = "";
-      }
-      document.getElementById("letter0").focus();
     }
 
     /* 🧠 Auto-navigation entre les champs */
@@ -275,5 +329,3 @@
   </script>
 </body>
 </html>
-
-
