@@ -103,7 +103,6 @@
       display: none;
     }
 
-    /* animation fade-in pour la photo finale */
     .fade-in {
       opacity: 0;
       animation: fadeInPhoto 1s forwards;
@@ -120,7 +119,6 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
 
-    /* responsive mobile */
     @media (max-width: 480px) {
       .input-container {
         gap: 3px;
@@ -159,7 +157,7 @@
   <img id="gift" class="gift" src="sablierwebp.webp" alt="Sablier">
   <img id="monkey" src="cadeau.gif" alt="Singe">
 
-  <div id="finalText">Nous sommes heureux de vous annoncer que la famille s'aggrandit</div>
+  <div id="finalText">Nous sommes heureux de vous annoncer que la famille va s'aggrandir bientôt avec le plus beau des cadeaux ! </div>
   <img id="finalPhoto" src="photo.jpg" alt="Photo surprise" class="fade-in">
 
   <div class="input-container" id="inputContainer">
@@ -171,7 +169,8 @@
     <input type="text" maxlength="1" id="letter5">
     <input type="text" maxlength="1" id="letter6">
   </div>
-  <button onclick="checkAnswer()">Valider</button>
+
+  <button id="validateBtn" onclick="checkAnswer()">Valider</button>
 
   <div id="popup" class="popup">
     <div class="popup-content">
@@ -183,6 +182,7 @@
   <script>
     const finalText = document.getElementById("finalText");
     const finalPhoto = document.getElementById("finalPhoto");
+    const validateBtn = document.getElementById("validateBtn");
 
     function checkAnswer() {
       const letters = [];
@@ -200,10 +200,9 @@
       if (answer === "PRESENT") {
         gift.style.display = "none";
         monkey.style.display = "block";
-        riddle.innerHTML = "Bravo ! La bonne réponse était le présent ! Clique à présent sur le cadeau pour découvrir ce que nous réserve le futur !"; // on enlève le texte de l'énigme
+        riddle.innerHTML = "Bravo ! La bonne réponse était le présent ! On offre des présents bien enveloppés de papier cadeau 🎁. <br> Le présent est pour autant inévitable, insaississable et on le savoure à chaque instant 😄. <br><br> Clique à présent sur le cadeau pour découvrir ce que nous réserve le futur !";
         inputContainer.style.display = "none";
-
-        // rendre le singe cliquable
+        validateBtn.style.display = "none"; // 🔥 cacher le bouton "Valider"
         monkey.addEventListener("click", showFinalPhoto);
       } else {
         popup.classList.add("active");
@@ -212,13 +211,16 @@
 
     function showFinalPhoto() {
       const monkey = document.getElementById("monkey");
-      monkey.style.display = "none";
-
       const riddle = document.getElementById("riddle");
-      riddle.innerHTML = ""; // s'assure que l'énigme est vide
+
+      monkey.style.display = "none";
+      riddle.innerHTML = "";
 
       finalText.style.display = "block";
       finalPhoto.style.display = "block";
+
+      // 🔥 On s'assure que le bouton reste caché même ici
+      validateBtn.style.display = "none";
     }
 
     function closePopup() {
